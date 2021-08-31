@@ -1,0 +1,3 @@
+{
+    "881819500985581579": "{\"title\": \"\", \"options\": [{\"py/object\": \"cmds.poll.Option\", \"text\": \"1\", \"opt_button\": \"01.\", \"voters\": []}, {\"py/object\": \"cmds.poll.Option\", \"text\": \"2\", \"opt_button\": \"02.\", \"voters\": [300604952068227072]}, {\"py/object\": \"cmds.poll.Option\", \"text\": \"3\", \"opt_button\": \"03.\", \"voters\": []}], \"expiry_time\": null, \"multi_vote\": false, \"channel_id\": 881559602368479292, \"author_id\": 300604952068227072, \"message_id\": 881819500985581579, \"head\": \"**[投票] test** （單選）\\n\", \"foot\": \"\\n發起人：<@300604952068227072>\"}"
+}
