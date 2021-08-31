@@ -1,0 +1,44 @@
+{
+    "name": "poll",
+    "description": "建立投票",
+    "options": [
+        {
+            "name": "title",
+            "description": "投票標題",
+            "type": 3,
+            "required": true,
+            "choices": []
+        },
+        {
+            "name": "options",
+            "description": "投票選項，以英文逗號分隔（逗號後要加上空格），至多 10 個",
+            "type": 3,
+            "required": true,
+            "choices": []
+        },
+        {
+            "name": "multivote",
+            "description": "（可選）是否允許投多個選項（預設：False）",
+            "type": 3,
+            "required": false,
+            "choices": [
+                {
+                    "value": "True",
+                    "name": "True"
+                },
+                {
+                    "value": "False",
+                    "name": "False"
+                }
+            ]
+        },
+        {
+            "name": "time",
+            "description": "（可選）在特定秒數後自動關閉此投票",
+            "type": 4,
+            "required": false,
+            "choices": []
+        }
+    ],
+    "guild_ids": [696300626686246945, 798194124066521099]
+}
