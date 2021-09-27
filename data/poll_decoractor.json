@@ -34,7 +34,7 @@
         },
         {
             "name": "time",
-            "description": "（可選）在特定秒數後自動關閉此投票",
+            "description": "（可選）在特定秒數後自動關閉此投票（預設：永久）",
             "type": 4,
             "required": false,
             "choices": []

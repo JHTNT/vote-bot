@@ -4,6 +4,7 @@ import sys
 import time
 import traceback
 from typing import List, Optional
+from replit import db
 
 import discord
 import jsonpickle
@@ -21,10 +22,11 @@ whole = "█"
 blocks = ["", "▌", "█"]
 lsep = "▏"
 rsep = "▏"
-with open(".\data\poll_decoractor.json", mode="r", encoding="utf8") as jfile:
+with open("data/poll_decoractor.json", mode="r", encoding="utf8") as jfile:
     decoractor = json.load(jfile)
 jsonpickle.set_preferred_backend('json')
 jsonpickle.set_encoder_options('json', ensure_ascii=False)
+# loop = asyncio.get_running_loop()
 
 class PollData:
     """投票資料"""
@@ -58,8 +60,9 @@ class Poll(CogExtension):
                            "06.", "07.", "08.", "09.", "10."]
         # 代替裝飾器版本的 listener
         self.bot.add_listener(self.on_component, "on_component")
-        with open(".\data\poll.json", mode="r", encoding="utf8") as jfile:
-            self.poll_data = json.load(jfile)
+        # with open("data/poll.json", mode="r", encoding="utf8") as jfile:
+        #     self.poll_data = json.load(jfile)
+        self.poll_data = db
         # self.polls = {}
 
     async def setup(self):
@@ -69,12 +72,14 @@ class Poll(CogExtension):
         return jsonpickle.decode(self.poll_data[str(id)])
 
     def delete_json_data(self, id):
-        del self.poll_data[str(id)]
-        self.dump_json_data(self.poll_data)      
+        # del self.poll_data[str(id)]
+        del db[str(id)]
+        # self.dump_json_data(self.poll_data)
 
-    def dump_json_data(self, data):
-        with open(".\data\poll.json", "w", encoding="utf8") as jfile:
-            json.dump(data, jfile, indent=4, ensure_ascii=False)
+    def dump_json_data(self, message_id, data):
+        # with open("data/poll.json", "w", encoding="utf8") as jfile:
+        #     json.dump(data, jfile, indent=4, ensure_ascii=False)
+        db[message_id] = data
 
     async def get_msg(self, channel: discord.TextChannel, message_id):
         """按照給定的 id 搜尋訊息"""
@@ -93,7 +98,11 @@ class Poll(CogExtension):
         #     return None
 
     async def on_component(self, ctx: ComponentContext):
-        poll: Optional[PollData] = await self.get_poll(ctx.origin_message_id)
+        loop = asyncio.get_running_loop()
+        if ctx.custom_id == "orange1":
+            poll = False
+        else:
+            poll: Optional[PollData] = await self.get_poll(ctx.origin_message_id)
         if poll:
             if ctx.custom_id == "close":
                 if (ctx.author_id == poll.author_id or
@@ -131,8 +140,9 @@ class Poll(CogExtension):
                 new_content = (poll.head + "\n".join(temp_option) +
                                "\n".join(temp_bar) + poll.foot)
                 # 更新 json 票數資料
-                self.poll_data[str(ctx.origin_message_id)] = jsonpickle.encode(poll.__dict__)
-                await asyncio.to_thread(self.dump_json_data, self.poll_data)
+                # self.poll_data[str(ctx.origin_message_id)] = jsonpickle.encode(poll.__dict__)
+                # await loop.run_in_executor(None, self.dump_json_data, self.poll_data)
+                await loop.run_in_executor(None, self.dump_json_data, str(ctx.origin_message_id), jsonpickle.encode(poll.__dict__))
 
                 await ctx.edit_origin(content=new_content)
 
@@ -154,8 +164,9 @@ class Poll(CogExtension):
         return progress_str
 
     async def get_poll(self, message_id) -> PollData:
+        loop = asyncio.get_running_loop()
         # try:
-        data = await asyncio.to_thread(self.get_json_data, message_id)
+        data = await loop.run_in_executor(None, self.get_json_data, message_id)
         if isinstance(data, PollData):
             return data
         poll = PollData(0)
@@ -168,10 +179,12 @@ class Poll(CogExtension):
         #     print(e)
         #     return None
 
-    @tasks.loop(seconds=20)
+    @tasks.loop(seconds=30)
     async def closePollsTask(self):
+        # loop = asyncio.get_running_loop()
         """檢查投票是否需要關閉"""
-        keys = await asyncio.to_thread(self.poll_data.keys)
+        # keys = await loop.run_in_executor(None, self.poll_data.keys)
+        keys = db.keys()
         for key in list(keys):
             poll = await self.get_poll(key)
             if poll.expiry_time is not None:
@@ -179,6 +192,7 @@ class Poll(CogExtension):
                     await self.close_poll(poll)
 
     async def close_poll(self, poll: PollData):
+        loop = asyncio.get_running_loop()
         channel = self.bot.get_channel(poll.channel_id)
         message = await self.get_msg(channel, poll.message_id)
         if message:
@@ -187,9 +201,10 @@ class Poll(CogExtension):
             origin_content += f"\n投票已在 <t:{int(time.time())}:R> 關閉"
             await message.edit(content=origin_content, components=None)
             # 移除投票
-            await asyncio.to_thread(self.delete_json_data, poll.message_id)
+            await loop.run_in_executor(None, self.delete_json_data, poll.message_id)
 
     async def create_poll(self, ctx: SlashContext, title, options: list, **kwargs):
+        loop = asyncio.get_running_loop()
         # try:
         temp_time = None
         poll_data = PollData(ctx.author_id)     # 初始化投票
@@ -252,8 +267,9 @@ class Poll(CogExtension):
         # 建立投票及儲存資料
         msg = await ctx.send(content=new_content, components=components)
         poll_data.message_id = msg.id
-        self.poll_data[str(msg.id)] = jsonpickle.encode(poll_data.__dict__)
-        await asyncio.to_thread(self.dump_json_data, self.poll_data)
+        # self.poll_data[str(msg.id)] = jsonpickle.encode(poll_data.__dict__)
+        # await loop.run_in_executor(None, self.dump_json_data, self.poll_data)
+        await loop.run_in_executor(None, self.dump_json_data, str(msg.id), jsonpickle.encode(poll_data.__dict__))
         # except Exception as e:
         #     error_class = e.__class__.__name__ #取得錯誤類型
         #     detail = e.args[0] #取得詳細內容

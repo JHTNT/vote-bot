@@ -2,3 +2,4 @@ discord==1.0.1
 discord-py-slash-command==3.0.1
 discord.py==1.7.3
 jsonpickle==2.0.0
+python==3.9.6
