@@ -7,7 +7,7 @@ import os
 import keep_alive
 
 bot = commands.Bot(command_prefix = "/", help_command=None)
-slash = SlashCommand(bot, sync_commands=True)
+slash = SlashCommand(bot, sync_commands=True, sync_on_cog_reload=True)
 
 @bot.event
 async def on_ready():
