@@ -22,11 +22,14 @@ whole = "█"
 blocks = ["", "▌", "█"]
 lsep = "▏"
 rsep = "▏"
-with open("data/poll_decoractor.json", mode="r", encoding="utf8") as jfile:
+with open("data/poll_decorator.json", mode="r", encoding="utf8") as jfile:
     decoractor = json.load(jfile)
 jsonpickle.set_preferred_backend('json')
 jsonpickle.set_encoder_options('json', ensure_ascii=False)
 # loop = asyncio.get_running_loop()
+
+db = db["poll"]
+button_components = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "close"]
 
 class PollData:
     """投票資料"""
@@ -59,7 +62,7 @@ class Poll(CogExtension):
         self.opt_button = ["01.", "02.", "03.", "04.", "05.",
                            "06.", "07.", "08.", "09.", "10."]
         # 代替裝飾器版本的 listener
-        self.bot.add_listener(self.on_component, "on_component")
+        # self.bot.add_listener(self.on_component, "on_component")
         # with open("data/poll.json", mode="r", encoding="utf8") as jfile:
         #     self.poll_data = json.load(jfile)
         self.poll_data = db
@@ -97,12 +100,10 @@ class Poll(CogExtension):
         # except discord.NoMoreItems:
         #     return None
 
+    @cog_ext.cog_component(components=button_components)
     async def on_component(self, ctx: ComponentContext):
         loop = asyncio.get_running_loop()
-        if ctx.custom_id == "orange1":
-            poll = False
-        else:
-            poll: Optional[PollData] = await self.get_poll(ctx.origin_message_id)
+        poll: Optional[PollData] = await self.get_poll(ctx.origin_message_id)
         if poll:
             if ctx.custom_id == "close":
                 if (ctx.author_id == poll.author_id or
@@ -135,7 +136,8 @@ class Poll(CogExtension):
                 temp_bar = ["\n```"]
                 for _option in poll.options:
                     temp_option.append(f"{_option.opt_button} {_option.text}")
-                    temp_bar.append(f"{_option.opt_button} {self.create_bar(len(_option.voters), total_votes)}")
+                    temp_bar.append(f"{_option.opt_button} " +
+                        f"{self.create_bar(len(_option.voters), total_votes)}")
                 temp_bar.append(f"```總票數：`{total_votes}`")
                 new_content = (poll.head + "\n".join(temp_option) +
                                "\n".join(temp_bar) + poll.foot)
@@ -246,8 +248,7 @@ class Poll(CogExtension):
             buttons.append(
                 create_button(
                     style=ButtonStyle.gray, custom_id=f"{i}",
-                    label=f"{opt_list[i]}")
-            )
+                    label=f"{opt_list[i]}"))
         temp_bar.append(f"\n```")
         new_content = (poll_data.head + "\n".join(temp_option) +
                        "\n".join(temp_bar) + poll_data.foot)

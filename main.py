@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 from discord_slash import SlashCommand, ComponentContext
+from discord_slash.cog_ext import cog_component
 from discord_slash.model import ButtonStyle
 from discord_slash.utils.manage_components import (create_actionrow, create_button)
 import os
@@ -57,11 +58,9 @@ async def sdvx(ctx):
     components.append(create_actionrow(*action_row_buttons))
     await ctx.send(content="橘鍵", components=components)
 
-async def on_component1(ctx: ComponentContext):
-    if ctx.custom_id == "orange1":
-        await ctx.send("<a:rick_roll:890283417613250581>", hidden=True)
-
-bot.add_listener(on_component1, "on_component")
+@cog_component(components=["orange1"])
+async def on_component(ctx: ComponentContext):
+    await ctx.send("<a:rick_roll:890283417613250581>", hidden=True)
 
 if __name__ == "__main__":
     keep_alive.keep_alive()
