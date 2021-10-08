@@ -1,0 +1,36 @@
+{
+    "yellow": [
+        {
+            "base": "yellow",
+            "name": "start",
+            "description": "開始遊戲",
+            "options": [
+                {
+                    "name": "score",
+                    "description": "目標分數",
+                    "type": 4,
+                    "required": true
+                },
+                {
+                    "name": "packs",
+                    "description": "選擇要使用的卡包（以空格分隔，輸入 all 啟用所有卡包）",
+                    "type": 3,
+                    "required": true
+                }
+            ],
+            "guild_ids": [696300626686246945, 662271535674949632]
+        },
+        {
+            "base": "yellow",
+            "name": "pack_list",
+            "description": "查看可用卡包",
+            "guild_ids": [696300626686246945, 662271535674949632]
+        },
+        {
+            "base": "yellow",
+            "name": "end_game",
+            "description": "結束當前頻道進行中的遊戲",
+            "guild_ids": [696300626686246945, 662271535674949632]
+        }
+    ]
+}
