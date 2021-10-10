@@ -140,8 +140,9 @@ class Game:
                         self.make_select(player_waiting), custom_id="first_card",
                         placeholder="選擇第一張答案卡", max_values=1))
                     try:
-                        await wait_for_component(self.ctx.bot, components="start_select",
+                        x = await wait_for_component(self.ctx.bot, components="start_select",
                             check=wait_check, timeout=120)
+                        await x.send("請在私訊中選擇卡牌", hidden=True)
                         await player_waiting.member.send(content=content, components=[ar])
                         msg = await wait_for_component(self.ctx.bot, components="first_card",
                                                        check=wait_check, timeout=90)
