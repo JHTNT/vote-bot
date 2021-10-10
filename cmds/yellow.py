@@ -431,7 +431,7 @@ class YelloCard(CogExtension):
 
     @cog_ext.cog_subcommand(**decoractor[2])
     async def yellow_end(self, ctx: SlashContext):
-        channel_game = self.games.get(ctx.channel, None)
+        channel_game = self.games.get(str(ctx.channel_id), None)
         if not channel_game:
             return await ctx.send("沒有遊戲在這個頻道進行", hidden=True)
         await channel_game.end()
