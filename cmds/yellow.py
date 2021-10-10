@@ -323,7 +323,7 @@ class Game:
             await self.ctx.channel.send(f'**剩餘玩家過少，無法繼續進行遊戲**')
             await self.end(True)
 
-    async def end(self, _=True):
+    async def end(self):
         self.active = False
         await self.ctx.channel.send('**遊戲將會在下個回合結束**')
 
