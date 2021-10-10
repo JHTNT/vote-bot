@@ -223,7 +223,7 @@ class Game:
         selection_buttons = []
         for i in range(len(playing_users)):
             selection_buttons.append(create_button(
-                style=ButtonStyle.gray, custom_id=f"{i}", label=f"{i + 1:02}"))
+                style=ButtonStyle.gray, custom_id=f"{i:02}", label=f"{i + 1:02}"))
         action_row_buttons = []
         components = []
         for button in selection_buttons:
