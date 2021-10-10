@@ -190,7 +190,7 @@ class Game:
                         try:
                             msg = await wait_for_component(self.ctx.bot, components="third_card",
                                                            check=wait_check, timeout=90)
-                            player_waiting.second_card = int(msg.selected_options[0])
+                            player_waiting.third_card = int(msg.selected_options[0])
                         except asyncio.TimeoutError:
                             await self.quit(player_waiting)
                             return await player_waiting.member.send("你因為掛機被踢出遊戲")
