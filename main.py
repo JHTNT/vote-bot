@@ -1,7 +1,6 @@
 import discord
 from discord.ext import commands
 from discord_slash import SlashCommand, ComponentContext
-from discord_slash.cog_ext import cog_component
 from discord_slash.model import ButtonStyle
 from discord_slash.utils.manage_components import (create_actionrow, create_button)
 import os
@@ -33,9 +32,12 @@ async def unload(ctx, extension):
 
 @bot.command()
 async def reload(ctx, extension):
-    bot.reload_extension(f"cmds.{extension}")
-    await ctx.message.delete()
-    await ctx.send(f"Reloaded `{extension}`")
+    try:
+        bot.reload_extension(f"cmds.{extension}")
+        await ctx.message.delete()
+        await ctx.send(f"Reloaded `{extension}`")
+    except discord.ext.commands.errors.ExtensionNotLoaded:
+        await ctx.send(f"`{extension}` not loaded")
 
 for filename in os.listdir("./cmds"):
     if filename.endswith(".py"):
@@ -58,11 +60,10 @@ async def sdvx(ctx):
     components.append(create_actionrow(*action_row_buttons))
     await ctx.send(content="橘鍵", components=components)
 
-@cog_component(components=["orange1"])
+@slash.component_callback(components="orange1")
 async def on_component(ctx: ComponentContext):
     await ctx.send("<a:rick_roll:890283417613250581>", hidden=True)
 
 if __name__ == "__main__":
     keep_alive.keep_alive()
-	# bot.run("NjIzOTI3ODUxNjYxNjU2MTE0.XYJkFw.8g0kp4JnshGt8kmq7rRoqQ9qarQ")
-    bot.run("ODQ0Mzk3MTA5Njk1MzQ4Nzc3.YKR0Fw.CZDJrg-AQAyyLGeDlhRwnDEpFz0")
+    bot.run(os.environ['TOKEN'])

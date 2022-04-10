@@ -4,11 +4,9 @@ import os
 
 app = Flask('')
 
-# print(os.environ["REPLIT_DB_URL"])
-
 @app.route('/')
 def main():
-	return 'Bot is aLive!'
+	return os.environ["REPLIT_DB_URL"]
 
 def run():
     app.run(host="0.0.0.0", port=8080)

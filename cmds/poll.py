@@ -1,8 +1,6 @@
 import asyncio
 import json
-import sys
 import time
-import traceback
 from typing import List, Optional
 from replit import db
 
@@ -27,8 +25,6 @@ with open("data/poll_decorator.json", mode="r", encoding="utf8") as jfile:
 jsonpickle.set_preferred_backend('json')
 jsonpickle.set_encoder_options('json', ensure_ascii=False)
 # loop = asyncio.get_running_loop()
-
-db = db["poll"]
 button_components = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "close"]
 
 class PollData:
@@ -65,24 +61,26 @@ class Poll(CogExtension):
         # self.bot.add_listener(self.on_component, "on_component")
         # with open("data/poll.json", mode="r", encoding="utf8") as jfile:
         #     self.poll_data = json.load(jfile)
-        self.poll_data = db
+        self.poll_data = db["poll"]
         # self.polls = {}
 
     async def setup(self):
         self.closePollsTask.start()
 
     def get_json_data(self, id):
+        self.poll_data = db["poll"]
         return jsonpickle.decode(self.poll_data[str(id)])
 
     def delete_json_data(self, id):
-        # del self.poll_data[str(id)]
-        del db[str(id)]
-        # self.dump_json_data(self.poll_data)
+        del self.poll_data[str(id)]
+        # del db["poll"][str(id)]
+        db["poll"] = self.poll_data
 
     def dump_json_data(self, message_id, data):
         # with open("data/poll.json", "w", encoding="utf8") as jfile:
         #     json.dump(data, jfile, indent=4, ensure_ascii=False)
-        db[message_id] = data
+        self.poll_data[message_id] = data
+        db["poll"] = self.poll_data
 
     async def get_msg(self, channel: discord.TextChannel, message_id):
         """按照給定的 id 搜尋訊息"""
@@ -186,7 +184,7 @@ class Poll(CogExtension):
         # loop = asyncio.get_running_loop()
         """檢查投票是否需要關閉"""
         # keys = await loop.run_in_executor(None, self.poll_data.keys)
-        keys = db.keys()
+        keys = db["poll"].keys()
         for key in list(keys):
             poll = await self.get_poll(key)
             if poll.expiry_time is not None:
@@ -201,7 +199,7 @@ class Poll(CogExtension):
             origin_content = message.content.replace(
                 poll.foot, f"\n發起人：<@{poll.author_id}>")
             origin_content += f"\n投票已在 <t:{int(time.time())}:R> 關閉"
-            await message.edit(content=origin_content, components=None)
+            await message.edit(content=origin_content, components=[])
             # 移除投票
             await loop.run_in_executor(None, self.delete_json_data, poll.message_id)
 
