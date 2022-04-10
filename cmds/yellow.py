@@ -16,7 +16,7 @@ from discord_slash.utils.manage_components import (create_actionrow,
                                                    wait_for_component)
 
 with open("data/yellow_decorator.json", mode="r", encoding="utf8") as jfile:
-    decoractor = json.load(jfile)["yellow"]
+    decorator = json.load(jfile)["yellow"]
 
 data = db["yellow"]
 
@@ -382,7 +382,7 @@ class YelloCard(CogExtension):
             else:
                 await ctx.send(content=":no_entry_sign: **你不在遊戲中**", hidden=True)
 
-    @cog_ext.cog_subcommand(**decoractor[0])
+    @cog_ext.cog_subcommand(**decorator[0])
     async def start(self, ctx: SlashContext, score: int, packs: str):
         # 添加參與者
         if str(ctx.channel_id) in data:
@@ -423,14 +423,14 @@ class YelloCard(CogExtension):
         del self.games[str(ctx.channel_id)]
         gc.collect()
 
-    @cog_ext.cog_subcommand(**decoractor[1])
+    @cog_ext.cog_subcommand(**decorator[1])
     async def yellow_packs(self, ctx: SlashContext):
         await ctx.send(embed=discord.Embed(
             title=f"可用卡包（{len(self.packs)}）",
             description="\n".join(f"{pack_id}：{pack_name}"
             for pack_id, pack_name in self.available_packs.items())), hidden=True)
 
-    @cog_ext.cog_subcommand(**decoractor[2])
+    @cog_ext.cog_subcommand(**decorator[2])
     async def yellow_end(self, ctx: SlashContext):
         channel_game = self.games.get(str(ctx.channel_id), None)
         if not channel_game:

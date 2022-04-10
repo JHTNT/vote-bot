@@ -21,7 +21,7 @@ blocks = ["", "▌", "█"]
 lsep = "▏"
 rsep = "▏"
 with open("data/poll_decorator.json", mode="r", encoding="utf8") as jfile:
-    decoractor = json.load(jfile)
+    decorator = json.load(jfile)
 jsonpickle.set_preferred_backend('json')
 jsonpickle.set_encoder_options('json', ensure_ascii=False)
 # loop = asyncio.get_running_loop()
@@ -281,7 +281,7 @@ class Poll(CogExtension):
         #     print(errMsg)
 
     # 需要 bot 權限檢查
-    @cog_ext.cog_slash(**decoractor)
+    @cog_ext.cog_slash(**decorator)
     async def poll(self, ctx: SlashContext, title: str, options: str,
                    multivote: str="False", time=None):
         await ctx.defer()
