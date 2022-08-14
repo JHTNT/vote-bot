@@ -323,7 +323,7 @@ class Game:
         await self.ctx.channel.send(f'**{player.member} 離開了遊戲**')
         if len(self.players) < self.min:
             await self.ctx.channel.send(f'**剩餘玩家過少，無法繼續進行遊戲**')
-            await self.end(True)
+            await self.end()
 
     async def end(self):
         self.active = False

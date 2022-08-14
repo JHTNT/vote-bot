@@ -1,0 +1,62 @@
+{
+    "song": [
+        {
+            "base": "song",
+            "name": "add",
+            "description": "添加歌曲",
+            "options": [
+                {
+                    "name": "name",
+                    "description": "歌曲名稱",
+                    "type": 3,
+                    "required": true
+                }
+            ],
+            "guild_ids": [798194124066521099]
+        },
+        {
+            "base": "song",
+            "name": "remove",
+            "description": "移除歌曲",
+            "options": [
+                {
+                    "name": "index",
+                    "description": "歌曲編號（請先查詢歌曲的編號）",
+                    "type": 4,
+                    "required": true
+                }
+            ],
+            "guild_ids": [798194124066521099]
+        },
+        {
+            "base": "song",
+            "name": "queue",
+            "description": "查詢歌曲佇列",
+            "options": [
+                {
+                    "name": "hide",
+                    "description": "是否只有自己可見",
+                    "type": 3,
+                    "required": false,
+                    "choices": [
+                        {
+                            "value": "True",
+                            "name": "True"
+                        },
+                        {
+                            "value": "False",
+                            "name": "False"
+                        }
+                    ]
+                }
+            ],
+            "guild_ids": [798194124066521099]
+        },
+        {
+            "base": "song",
+            "name": "clear",
+            "description": "清除所有歌曲",
+            "guild_ids": [798194124066521099]
+        }
+    ]
+}
